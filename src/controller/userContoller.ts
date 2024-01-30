@@ -62,3 +62,30 @@ export const signIn = async (req: Request, res: Response) => {
     return res.status(500).json({ Error: "Internal Server Error" });
   }
 };
+
+export const retrievePassword = async (req: Request, res: Response) => {
+  try {
+    const { usename, new_password, confirm_password } = req.body;
+    if (new_password !== confirm_password) {
+      return res
+        .status(400)
+        .json({ message: "password and confirm_password does not match" });
+    }
+    const existingUser = await userModel.findOne({ usename });
+    if (!existingUser) {
+      return res
+        .status(400)
+        .json({ message: "User does not exist, kindly sign up." });
+    }
+    const password_hash = await bcrypt.hash(new_password, 10);
+    existingUser.password_hash = password_hash;
+    await existingUser.save();
+
+    return res
+      .status(200)
+      .json({ message: "Successful,Kindly login." });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ Error: "Internal Server Error" });
+  }
+};
