@@ -73,7 +73,7 @@ export const deleteAssesment=async (req: Request | any, res: Response)=>{
   
     return res
     .status(200)
-    .json({ message: "Assessment retrieved successfully", assessment });
+    .json({ message: "Assessment deleted successfully", assessment });
 
   } catch (error) {
     console.error(error);
